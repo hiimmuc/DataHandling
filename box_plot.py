@@ -103,67 +103,67 @@ for personality, personality_df in personalities.items():
         plt.tight_layout()
         # plt.grid(True)
         # plt.show()
-        os.makedirs('./figures/survey_box_images/', exist_ok=True)
+        os.makedirs('./figures/survey_box_images_sent_prior/', exist_ok=True)
         plt.savefig(
-            f'./figures/survey_box_images/{personality}-{situation}-{question}.png', bbox_inches='tight')
+            f'./figures/survey_box_images_sent_prior/{personality}-{situation}-{question}.png', bbox_inches='tight')
         plt.close()
 
         r.add_text(f">>{personality} in {situation} with {question}:")
         r.add_picture(
-            f"./figures/survey_box_images/{personality}-{situation}-{question}.png")
+            f"./figures/survey_box_images_sent_prior/{personality}-{situation}-{question}.png")
 
 document.save(
     './plot_document/box_plot_personality.docx')
 
 # ///////////////////////////////////////////////////////////////
-# sentences_df = {}
-# for idx, (col_name, col_values) in enumerate(df.iloc[:, 9:].to_dict('list').items()):
-#     sentences_df[f"{col_name}"] = df[df[col_name] == 6].iloc[:, 4: 9]
+sentences_df = {}
+for idx, (col_name, col_values) in enumerate(df.iloc[:, 9:].to_dict('list').items()):
+    sentences_df[f"{col_name}"] = df[df[col_name] == 6].iloc[:, 4: 9]
 
-# sentences_df = dict(sorted(sentences_df.items()))
+sentences_df = dict(sorted(sentences_df.items()))
 
-# document = Document()
-# p = document.add_paragraph()
-# r = p.add_run()
+document = Document()
+p = document.add_paragraph()
+r = p.add_run()
 
-# for i, (sent, sent_df) in enumerate(sentences_df.items()):
-#     # persnality label and the dataframe filtered by the label
-#     # print(personality_df)
-#     situation, question, sent_ = sent.split('-')
-#     myKeys = list(sent_df.keys())
-#     myKeys.sort()
-#     sorted_dict = {i: sent_df[i] for i in myKeys}
+for i, (sent, sent_df) in enumerate(sentences_df.items()):
+    # persnality label and the dataframe filtered by the label
+    # print(personality_df)
+    situation, question, sent_ = sent.split('-')
+    myKeys = list(sent_df.keys())
+    myKeys.sort()
+    sorted_dict = {i: sent_df[i] for i in myKeys}
 
-#     data = [col_list for col_name, col_list in sorted_dict.items()]
-#     labels = [col_name for col_name, col_list in sorted_dict.items()]
-#     # print(data)
-#     fig = plt.figure(figsize=(4.5, 2))
-#     # Creating axes instance
-#     ax = fig.add_axes([0, 0, 1, 1])
-#     ax.set_yticklabels(labels, fontsize=8)
-#     # Creating plot
-#     bp = ax.boxplot(data, vert=False, patch_artist=True)
+    data = [col_list for col_name, col_list in sorted_dict.items()]
+    labels = [col_name for col_name, col_list in sorted_dict.items()]
+    # print(data)
+    fig = plt.figure(figsize=(4.5, 2))
+    # Creating axes instance
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_yticklabels(labels, fontsize=8)
+    # Creating plot
+    bp = ax.boxplot(data, vert=False, patch_artist=True)
 
-#     ax.set_title(sent_,  fontsize=12)
-#     ax.set_xlim(0, 14)
+    ax.set_title(sent_,  fontsize=12)
+    ax.set_xlim(0, 14)
 
-#     colors = ['pink', 'lightblue', 'lightgreen', 'lightyellow', 'purple']
+    colors = ['pink', 'lightblue', 'lightgreen', 'lightyellow', 'purple']
 
-#     for patch, color in zip(bp['boxes'], colors):
-#         patch.set_facecolor(color)
+    for patch, color in zip(bp['boxes'], colors):
+        patch.set_facecolor(color)
 
-#     plt.tight_layout()
-#     # plt.grid(True)
-#     # plt.show()
+    plt.tight_layout()
+    # plt.grid(True)
+    # plt.show()
 
-#     os.makedirs('./figures/survey_box_images2/', exist_ok=True)
-#     plt.savefig(
-#         f'./figures/survey_box_images2/sent{i}-{situation}-{question}.png', bbox_inches='tight')
-#     plt.close()
+    os.makedirs('./figures/survey_box_images_rank0/', exist_ok=True)
+    plt.savefig(
+        f'./figures/survey_box_images_rank0/sent{i}-{situation}-{question}.png', bbox_inches='tight')
+    plt.close()
 
-#     r.add_text(f">>{situation} with {question} for {sent_}:")
-#     r.add_picture(
-#         f"./figures/survey_box_images2/sent{i}-{situation}-{question}.png")
+    r.add_text(f">>{situation} with {question} for {sent_}:")
+    r.add_picture(
+        f"./figures/survey_box_images_rank0/sent{i}-{situation}-{question}.png")
 
-# document.save(
-#     './plot_document/box_plot_sentence_rank_20.docx')
+document.save(
+    './plot_document/box_plot_sentence_rank_0.docx')
