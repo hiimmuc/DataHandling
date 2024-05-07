@@ -1,0 +1,8 @@
+python-docx 
+kaleido 
+pandas[excel] 
+pingouin 
+numpy==1.24
+plotly
+seaborn
+matplotlib
