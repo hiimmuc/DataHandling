@@ -168,7 +168,7 @@ map_big5_sents = map_big5_sents.to_dict('list')
 map_big5_sents = dict((vi.lower(), k)
                       for k, v in map_big5_sents.items() for vi in v)
 map_big5_sents['Nonverbal communications (e.g. Head nod, gestures, eye contact)'.lower(
-)] = 'NonVerbal'
+)] = 'Voiceless'
 map_big5_sents['showing hand gestures and eye contact on the display screen'.lower()
                ] = 'Silent'
 

@@ -10,7 +10,7 @@ import soundfile as sf
 
 def text2speech(text, voice_name, speech_config, save_path):
     audio_config = speechsdk.audio.AudioOutputConfig(
-        use_default_speaker=True, filename=f"{save_path}.mp3")
+        use_default_speaker=True, filename=f"{save_path}.wav")
 
     speech_config.speech_synthesis_voice_name = voice_name
 
@@ -34,12 +34,7 @@ def text2speech(text, voice_name, speech_config, save_path):
 
 if __name__ == '__main__':
     # configurations
-    save_dir = r"./mp3_files"
-    # with open('D:\HuRoLab\workspace\DataHandling\data\sentences.csv') as rf:/home/phgnam/Workspace/workspace/Big5GenerationResponse/results/script
-    #     sentences = [line.replace('\n', '') for line in rf.readlines()]\
-    df = pd.read_csv(r"./data/sentences.csv")
-    # sentences.remove('')
-    # print(sentences, len(sentences))
+    save_dir = r"./wav_files"
 
     # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
     speech_key = "7aae4a6c4cf841ea9f0e689646ad4acc"
@@ -49,22 +44,38 @@ if __name__ == '__main__':
         subscription=speech_key, region=service_region)
 
     # Female Voice
-    character = 'ThomasNeural'
-    voice_name = f'en-GB-{character}'
+    character = 'AmberNeural'
+    voice_name = f'en-US-{character}'
 
-    save_nv_path = os.path.join(save_dir + f'/{character}')
-    os.makedirs(save_nv_path, exist_ok=True)
+    # CSV files
+    # df = pd.read_csv(r"./data/sentences.csv")
 
-    sent_idxes = {0: 'hollow',
-                  1: 'yield',
-                  2: 'thanks'}
+    # save_nv_path = os.path.join(save_dir + f'/{character}')
+    # os.makedirs(save_nv_path, exist_ok=True)
 
-    for idx, (personality, sentences) in enumerate(df.to_dict('list').items()):
-        for sent_idx, sentence in enumerate(sentences):
-            os.makedirs(
-                f"{save_nv_path}/0{idx}.eHMI_{personality}/", exist_ok=True)
-            text2speech(str(sentence), voice_name=voice_name,
-                        speech_config=speech_config, save_path=f"{save_nv_path}/0{idx}.eHMI_{personality}/{sent_idxes[sent_idx]}")
+    # sent_idxes = {0: 'hollow',
+    #               1: 'yield',
+    #               2: 'thanks'}
+
+    # for idx, (personality, sentences) in enumerate(df.to_dict('list').items()):
+    #     for sent_idx, sentence in enumerate(sentences):
+    #         os.makedirs(
+    #             f"{save_nv_path}/0{idx}.eHMI_{personality}/", exist_ok=True)
+    #         text2speech(str(sentence), voice_name=voice_name,
+    #                     speech_config=speech_config, save_path=f"{save_nv_path}/0{idx}.eHMI_{personality}/{sent_idxes[sent_idx]}")
+
+    # txt file
+    with open(r'D:\HuRoLab\workspace\DataHandling\Script copy.txt') as rf:
+        sentences = [line.replace('\n', '') for line in rf.readlines()]
+
+    # sentences.remove('')
+    print(sentences, len(sentences))
+
+    for sent_idx, sentence in enumerate(sentences):
+        os.makedirs(
+            f"{save_dir}/script_4/", exist_ok=True)
+        text2speech(str(sentence), voice_name=voice_name,
+                    speech_config=speech_config, save_path=f"{save_dir}/script_4/audio_{sent_idx}")
     # </code>
     # pitch shift for affective voice
     # 12 semitones shift up 15% = 1.8 semitones = 1.8 half steps
@@ -73,6 +84,7 @@ if __name__ == '__main__':
     # save_av_path = save_nv_path.replace('NV', 'AV')
     # os.makedirs(save_av_path, exist_ok=True)
     # sf.write(f"{save_av_path}/{idx}.mp3", y_shifted, sr, format='mp3')
+
 
 # Male voice
 # character = 'en-US-BrianNeural'
@@ -101,11 +113,11 @@ if __name__ == '__main__':
 #                     print("Error details: {}".format(
 #                         cancellation_details.error_details))
 #                     print("Did you set the speech resource key and region values?")
-    # </code>
-    # pitch shift for affective voice
-    # 12 semitones shift up 15% = 1.8 semitones = 1.8 half steps
-    # y, sr = sf.read(f"{save_nv_path}/{idx}.mp3")
-    # y_shifted = librosa.effects.pitch_shift(y=y, sr=sr, n_steps=1.8)
-    # save_av_path = save_nv_path.replace('NV', 'AV')
-    # os.makedirs(save_av_path, exist_ok=True)
-    # sf.write(f"{save_av_path}/{idx}.mp3", y_shifted, sr, format='mp3')
+# </code>
+# pitch shift for affective voice
+# 12 semitones shift up 15% = 1.8 semitones = 1.8 half steps
+# y, sr = sf.read(f"{save_nv_path}/{idx}.mp3")
+# y_shifted = librosa.effects.pitch_shift(y=y, sr=sr, n_steps=1.8)
+# save_av_path = save_nv_path.replace('NV', 'AV')
+# os.makedirs(save_av_path, exist_ok=True)
+# sf.write(f"{save_av_path}/{idx}.mp3", y_shifted, sr, format='mp3')

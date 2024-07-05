@@ -9,19 +9,23 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-n_rows = 20
+n_rows = 18
 df = pd.read_excel(
     f'./transformed_data/modified_rank_prior_{n_rows}.xlsx')
 personality_labels = ['Extraversion',	'Agreeableness',
                       'Conscientiousness',	'Neuroticism',	'Openness to Experiences']
 
+mean_threshold = []
+std_threshold = []
 strong_threshold = []
 weak_threshold = []
 
 for idx, (col_name, col_values) in enumerate(df.iloc[:, 4:9].to_dict('list').items()):
     print(col_name)
     strong_threshold.append(df[col_name].mean() + 0.5 * df[col_name].std())
+    mean_threshold.append(df[col_name].mean())
     weak_threshold.append(df[col_name].mean() - 0.5 * df[col_name].std())
+    std_threshold.append(df[col_name].std())
     pass
 
 print(strong_threshold, weak_threshold)
@@ -40,9 +44,9 @@ map_big5_sents = map_big5_sents.to_dict('list')
 map_big5_sents = dict((vi.lower(), k)
                       for k, v in map_big5_sents.items() for vi in v)
 map_big5_sents['Nonverbal communications (e.g. Head nod, gestures, eye contact)'.lower(
-)] = '-'
+)] = 'Voiceless'
 map_big5_sents['showing hand gestures and eye contact on the display screen'.lower()
-               ] = '--'
+               ] = 'Silent'
 
 Question_answers = [
     ["Good morning, It's nice to see you around", "Hi there!", "Hi there! How's your day going?",
@@ -63,7 +67,7 @@ Question_answers = [
 # Sample data
 
 
-def plot_spider_graph(mean, std, lower_bound, upper_bound, save_name, title):
+def plot_spider_graph(mean, std, threshold_mean, threshold_std, save_name, title):
     big5_labels = ['Extraversion',	'Agreeableness',
                    'Conscientiousness',	'Neuroticism',	'Openness to Experience']
 
@@ -71,9 +75,9 @@ def plot_spider_graph(mean, std, lower_bound, upper_bound, save_name, title):
 
     # mean_add_std = [round(mean[i] + std[i], 3)  for i in range(len(mean))]
 
-    lower_bound = [round(el, 3) for el in lower_bound]
+    threshold_mean = [round(el, 3) for el in threshold_mean]
 
-    upper_bound = [round(el, 3) for el in upper_bound]
+    threshold_std = [round(el, 3) for el in threshold_std]
 
     values = mean + [mean[i] - std[i]
                      for i in range(len(mean))] + [mean[i] + std[i] for i in range(len(mean))]
@@ -88,22 +92,30 @@ def plot_spider_graph(mean, std, lower_bound, upper_bound, save_name, title):
                '+std', '+std', '+std', '+std', '+std'],
         name='Result'))
 
-    df_low = pd.DataFrame(dict(
-        value=lower_bound,
+    # df_low = pd.DataFrame(dict(
+    #     value=threshold_mean - 0.5*threshold_std,
+    #     variable=big5_labels,
+    #     group=['low', 'low', 'low', 'low', 'low'],
+    #     name='Lower Threshold'
+    # ))
+
+    # df_high = pd.DataFrame(dict(
+    #     value=threshold_mean + 0.5*threshold_std,
+    #     variable=big5_labels,
+    #     group=['high', 'high', 'high', 'high', 'high'],
+    #     name='Upper Threshold',
+
+    # ))
+
+    df_mean = pd.DataFrame(dict(
+        value=threshold_mean,
         variable=big5_labels,
-        group=['low', 'low', 'low', 'low', 'low'],
-        name='Lower Threshold'
+        group=['mean', 'mean', 'mean', 'mean', 'mean'],
+        name='Mean population',
+
     ))
 
-    df_high = pd.DataFrame(dict(
-        value=upper_bound,
-        variable=big5_labels,
-        group=['high', 'high', 'high', 'high', 'high'],
-        name='Upper Threshold',
-
-    ))
-
-    df = pd.concat([df, df_low, df_high], axis=0, ignore_index=True)
+    df = pd.concat([df, df_mean], axis=0, ignore_index=True)
 
     fig = px.line_polar(df, r='value', theta='variable',
                         line_close=True, template='seaborn',
@@ -119,7 +131,7 @@ def plot_spider_graph(mean, std, lower_bound, upper_bound, save_name, title):
                 range=[0, 15]
             )),
         showlegend=True,
-        font={'size': 11},
+        font={'size': 12},
         title={'text': f'<b>{title}</b>', 'font': {'size': 12}}
     )
 
@@ -149,7 +161,7 @@ for idx, (col_name, col_values) in enumerate(df.iloc[:, 9:].to_dict('List').item
             big5_mean = list(df_selected.mean().to_dict().values())
             big5_std = list(df_selected.std().to_dict().values())
 
-            plot_spider_graph(big5_mean, big5_std, weak_threshold, strong_threshold,
+            plot_spider_graph(big5_mean, big5_std, mean_threshold, std_threshold,
                               f"{col_name}_content_{uniq_val.replace('/', '')}",
                               title=f"{uniq_val} ({map_big5_sents[uniq_val.lower()]}) ({len(df_selected)})")
 
@@ -157,4 +169,4 @@ for idx, (col_name, col_values) in enumerate(df.iloc[:, 9:].to_dict('List').item
             r.add_picture(
                 f"./figures/survey_spider_images/{col_name}_content_{uniq_val.replace('/', '')}.png")
 
-document.save('./plot_document/survey_spider_charts.docx')
+document.save(f'./plot_documents/survey_spider_charts_{n_rows}.docx')
